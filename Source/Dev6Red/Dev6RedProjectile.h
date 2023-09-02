@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UParticleSystem;
 
 UCLASS(config=Game)
 class ADev6RedProjectile : public AActor
@@ -21,6 +22,10 @@ class ADev6RedProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	/*Particle System*/
+	UPROPERTY(EditDefaultsOnly, Category="FX")
+	UParticleSystem* ExplosionEffect;
 
 public:
 	ADev6RedProjectile();
