@@ -43,6 +43,9 @@ class ADev6RedCharacter : public ACharacter
 public:
 	ADev6RedCharacter();
 
+	UPROPERTY(BlueprintReadOnly, Category="Gameplay")
+	bool bIsCarryObjective;
+
 protected:
 	virtual void BeginPlay();
 
