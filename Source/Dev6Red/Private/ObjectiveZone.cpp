@@ -4,22 +4,29 @@
 #include "ObjectiveZone.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/DecalComponent.h"
 
 // Sets default values
 AObjectiveZone::AObjectiveZone()
 {
+	
 	OverlapComp = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapComp"));
 
 	OverlapComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OverlapComp->SetCollisionResponseToChannels(ECR_Ignore);
 	OverlapComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	OverlapComp->SetBoxExtent(FVector(200.0f));
+	OverlapComp->SetBoxExtent(m_BoxSizeExtent);
 
 	RootComponent = OverlapComp;
 	OverlapComp->SetHiddenInGame(false);
 
 	OverlapComp->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::HandleOverlap);
+
+	//DecalComp
+	DecalComp = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComp"));
+	DecalComp->DecalSize = FVector(m_BoxSizeExtent);
+	DecalComp->SetupAttachment(RootComponent);
 
 }
 

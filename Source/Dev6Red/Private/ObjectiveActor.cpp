@@ -20,6 +20,8 @@ AObjectiveActor::AObjectiveActor()
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	SphereComp->SetupAttachment(MeshComp);
 
+	
+
 }
 
 // Called when the game starts or when spawned

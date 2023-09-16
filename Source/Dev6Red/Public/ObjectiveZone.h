@@ -12,7 +12,8 @@ UCLASS()
 class DEV6RED_API AObjectiveZone : public AActor
 {
 	GENERATED_BODY()
-	
+
+	FVector m_BoxSizeExtent = FVector(200.0f, 200.0f,200.0f);
 public:	
 	// Sets default values for this actor's properties
 	AObjectiveZone();
@@ -23,6 +24,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Component")
 	UBoxComponent* OverlapComp;
+
+	UPROPERTY(VisibleAnywhere, Category="Component")
+	UDecalComponent* DecalComp;
 
 	UFUNCTION()
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
