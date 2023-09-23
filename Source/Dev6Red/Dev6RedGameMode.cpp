@@ -12,3 +12,13 @@ ADev6RedGameMode::ADev6RedGameMode()
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
 }
+
+void ADev6RedGameMode::CompleteMission(APawn* Pawn)
+{
+	if (Pawn)
+	{
+		Pawn->DisableInput(nullptr);
+	}
+
+	OnMissionComplete(Pawn);
+}

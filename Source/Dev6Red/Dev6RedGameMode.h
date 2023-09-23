@@ -13,6 +13,11 @@ class ADev6RedGameMode : public AGameModeBase
 
 public:
 	ADev6RedGameMode();
+
+	void CompleteMission(APawn* Pawn);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="GameMode")
+	void OnMissionComplete(APawn* Pawn);
 };
 
 

@@ -5,13 +5,15 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
+#include "Dev6Red/Dev6RedCharacter.h"
+#include "Dev6Red/Dev6RedGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AObjectiveZone::AObjectiveZone()
 {
 	
 	OverlapComp = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapComp"));
-
 	OverlapComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OverlapComp->SetCollisionResponseToChannels(ECR_Ignore);
 	OverlapComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
@@ -20,13 +22,13 @@ AObjectiveZone::AObjectiveZone()
 
 	RootComponent = OverlapComp;
 	OverlapComp->SetHiddenInGame(false);
-
 	OverlapComp->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::HandleOverlap);
 
 	//DecalComp
 	DecalComp = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComp"));
 	DecalComp->DecalSize = FVector(m_BoxSizeExtent);
 	DecalComp->SetupAttachment(RootComponent);
+	
 
 }
 
@@ -48,6 +50,27 @@ void AObjectiveZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green,
 			FString::Printf(TEXT("Overlapped")));
+	}
+
+	ADev6RedCharacter* MyPawn = Cast<ADev6RedCharacter>(OtherActor);
+
+	if (MyPawn == nullptr)
+	{
+		return;
+	}
+
+	if(MyPawn->bIsCarryObjective)
+	{
+		ADev6RedGameMode* GM = Cast<ADev6RedGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (GM)
+		{
+			GM->CompleteMission(MyPawn);
+		}
+	}
+	else
+	{
+		UGameplayStatics::PlaySound2D(this, ObjectiveMissingSound);
 	}
 }
 
