@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Dev6RedCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -13,6 +15,7 @@ class USceneComponent;
 class UCameraComponent;
 class UAnimMontage;
 class USoundBase;
+
 
 UCLASS(config=Game)
 class ADev6RedCharacter : public ACharacter
@@ -85,6 +88,18 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+
+public:
+	IOnlineSessionPtr OnlineSessionInterface;
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void CreateGameSession();
+
+	void OnCreateSessionComplete(FName SessionName, bool bWasSuccess);
+
+private:
+	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate;
 
 };
 

@@ -7,13 +7,15 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
+#include "OnlineSubsystem.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ADev6RedCharacter
 
-ADev6RedCharacter::ADev6RedCharacter()
+ADev6RedCharacter::ADev6RedCharacter() :
+	CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete))
 {
+	
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
 	
@@ -34,6 +36,19 @@ ADev6RedCharacter::ADev6RedCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	//Online Subsystem
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if(OnlineSubsystem)
+	{
+		OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
+
+		if(GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple,
+				FString::Printf(TEXT("found subsystem %s"), *OnlineSubsystem->GetSubsystemName().ToString() ));
+		}
+	}
 
 }
 
@@ -70,6 +85,32 @@ void ADev6RedCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADev6RedCharacter::Look);
 	}
+}
+
+void ADev6RedCharacter::CreateGameSession()
+{
+	//Create a session by pressing key 1
+	if(!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	auto ExistingSession = OnlineSessionInterface->GetNamedSession(NAME_GameSession);
+
+	if (ExistingSession != nullptr)
+	{
+		OnlineSessionInterface->DestroySession(NAME_GameSession);
+	}
+
+	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
+	
+	
+	
+}
+
+void ADev6RedCharacter::OnCreateSessionComplete(FName SessionName, bool bWasSuccess)
+{
+	
 }
 
 
